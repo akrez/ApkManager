@@ -132,7 +132,8 @@ class ApkManager
     {
         if (preg_match('/^([A-Za-z]{1}[A-Za-z\d_]*\.)+[A-Za-z][A-Za-z\d_]*$/', $packageName) && preg_match('/^[0-9]*$/', $versionCode)) {
             $path = ApkManager::addresses('importBase', $packageName, $versionCode);
-            return @unlink($path);
+            $command = "RMDIR /S /Q " . str_ireplace("/", "\\", __DIR__ . '/' . $path);
+            return exec($command);
         }
         return false;
     }
@@ -146,6 +147,7 @@ $input = $_GET + [
 ];
 
 if ($input['action']) {
+    $redirectTo = './?query=' . $input['query'];
     if ($input['action'] == 'import') {
         ApkManager::importFromBaseDirectory();
     } elseif ($input['action'] == 'delete') {
@@ -157,7 +159,7 @@ if ($input['action']) {
             }
         }
     }
-    header('Location: ./');
+    header('Location: ' . $redirectTo);
     die;
 }
 ?>
